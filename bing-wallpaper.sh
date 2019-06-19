@@ -19,6 +19,12 @@ Options:
 EOF
 }
 
+transform_urls() {
+    sed -e "s/\\\//g" | \
+        sed -e "s/[[:digit:]]\{1,\}x[[:digit:]]\{1,\}/$RESOLUTION/" | \
+        tr "\n" " "
+}
+
 # Defaults
 PICTURE_DIR="$HOME/Pictures/bing-desktop-wallpapers/"
 RESOLUTION="1920x1080"
@@ -53,3 +59,23 @@ while [[ $# -gt 0 ]]; do
     esac
     shift
 done
+
+# Create picture directory if it doesn't already exist
+mkdir -p "${PICTURE_DIR}"
+
+# Parse bing.com and acquire picture URL
+read -ra url < <(curl -sL https://www.bing.com | \
+    grep -Eo "url:'.*?'" | \
+    sed -e "s/url:'\([^']*\)'.*/https:\/\/bing.com\1/" | \
+    transform_urls)
+
+# Get filename
+filename=$(echo "$url" | sed -e 's/.*[?&;]id=\([^&]*\).*/\1/' | grep -oe '[^\.]*\.[^\.]*$')
+
+if [ ! -f "$PICTURE_DIR/$filename" ]; then
+    printf "Downloading wallpaper: %s...\n" "$filename"
+    curl -Lo "$PICTURE_DIR/$filename" "$url"
+else
+    printf "Skipping file: %s already exist\n" "$filename"
+    SET_WALLPAPER=false
+fi
