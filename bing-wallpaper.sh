@@ -79,3 +79,10 @@ else
     printf "Skipping file: %s already exist\n" "$filename"
     SET_WALLPAPER=false
 fi
+
+# Set wallpaper
+if $SET_WALLPAPER; then
+    /usr/bin/osascript<<END
+tell application "System Events" to set picture of every desktop to ("$PICTURE_DIR/$filename" as POSIX file as alias)
+END
+fi
