@@ -10,6 +10,7 @@ A script to change your desktop background to the Bing daily image.
 * Copy the *plist* file to, **$HOME/Library/LaunchAgents** and
 loaded with the command `launchctl load $HOME/Library/LaunchAgents/com.bing.wallpaper.plist`. 
 * To remove use the command `launchctl unload $HOME/Library/LaunchAgents/com.bing.wallpaper.plist`. 
+* If you get the message `Path had bad ownership/permissions` use `chmod 755 $HOME/Library/LaunchAgents/com.bing.wallpaper.plist` 
 
 
 ## How to use?
